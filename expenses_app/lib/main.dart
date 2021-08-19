@@ -16,16 +16,19 @@ class MyApp extends StatelessWidget {
           accentColor: Colors.amber,
           fontFamily: 'Quicksand',
           textTheme: ThemeData.light().textTheme.copyWith(
-              title: TextStyle(
-                  fontFamily: "OpenSans",
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold)),
+                title: TextStyle(
+                    fontFamily: "OpenSans",
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold),
+                button: TextStyle(color: Colors.white),
+              ),
           appBarTheme: AppBarTheme(
               textTheme: ThemeData.light().textTheme.copyWith(
-                  title: TextStyle(
-                      fontFamily: "OpenSans",
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold)))),
+                    title: TextStyle(
+                        fontFamily: "OpenSans",
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold),
+                  ))),
       home: MyHomePage(),
     );
   }
@@ -37,24 +40,25 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final List<Transaction> _userTransactions = [
-    // Transaction(
-    //     id: 't1', title: 'New Shoes', amount: 69.99, date: DateTime.now()),
-    // Transaction(
-    //     id: 't2',
-    //     title: 'Weekly Groceries',
-    //     amount: 43.39,
-    //     date: DateTime.now()),
-  ];
+  final List<Transaction> _userTransactions = [];
 
-  void addTransaction({@required String trTitle, @required double trAmount}) {
+  void addTransaction(
+      {@required String trTitle,
+      @required double trAmount,
+      @required DateTime trDate}) {
     final newTr = Transaction(
         id: DateTime.now().toString(),
         title: trTitle,
         amount: trAmount,
-        date: DateTime.now());
+        date: trDate);
     setState(() {
       _userTransactions.add(newTr);
+    });
+  }
+
+  void removeTransaction(String id) {
+    setState(() {
+      _userTransactions.removeWhere((element) => element.id == id);
     });
   }
 
@@ -82,7 +86,8 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
         body: SingleChildScrollView(
-          child: Column(children: [
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
             Chart(
               _userTransactions
                   .where((element) => element.date.isAfter(
@@ -90,13 +95,16 @@ class _MyHomePageState extends State<MyHomePage> {
                       ))
                   .toList(),
             ),
-            TransactionList(_userTransactions),
+            TransactionList(_userTransactions, removeTransaction),
           ]),
         ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add),
-          onPressed: () => startAddNewTransaction(context),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+        floatingActionButton: Container(
+          margin: EdgeInsets.fromLTRB(0, 0, 15, 15),
+          child: FloatingActionButton(
+            child: Icon(Icons.add),
+            onPressed: () => startAddNewTransaction(context),
+          ),
         ));
   }
 }
