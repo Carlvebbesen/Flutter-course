@@ -56,7 +56,8 @@ class _MyAppState extends State<MyApp> {
       routes: {
         "/": (context) => TabsScreen(favorites),
         FiltersScreen.routeName: (context) => FiltersScreen(filters, setFilter),
-        CategoriesMealsScreen.routeName: (context) => CategoriesMealsScreen(),
+        CategoriesMealsScreen.routeName: (context) =>
+            CategoriesMealsScreen(filteredMeals),
         MealDetailScreen.routeName: (context) =>
             MealDetailScreen(filteredMeals),
       },

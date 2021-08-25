@@ -12,3 +12,4 @@ class FavoriteScreen extends StatelessWidget {
     );
   }
 }
+''
