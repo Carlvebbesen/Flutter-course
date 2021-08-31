@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_complete_guide/providers/product.dart';
+import 'package:http/http.dart' as http;
 
 class Products with ChangeNotifier {
   List<Product> _items = [
@@ -49,8 +52,74 @@ class Products with ChangeNotifier {
     return _items.firstWhere((element) => element.id == id);
   }
 
-  void addProduct() {
-    //_items.add(value)
+  Future<void> addProduct(Product product) async {
+    final url = Uri.https(
+        "fluttercourse-4d5af-default-rtdb.firebaseio.com", "/products.json");
+    try {
+      final response = await http.post(url,
+          body: json.encode({
+            "title": product.title,
+            "description": product.description,
+            "price": product.price,
+            "imageUrl": product.imageUrl
+          }));
+      final newProduct = Product(
+          id: json.decode(response.body)["name"],
+          title: product.title,
+          description: product.description,
+          price: product.price,
+          imageUrl: product.imageUrl);
+      _items.insert(0, newProduct);
+      notifyListeners();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  Future<void> editProduct(String id, Product newProduct) async {
+    final oldItem = _items.indexWhere((element) => element.id == id);
+    final url = Uri.https("fluttercourse-4d5af-default-rtdb.firebaseio.com",
+        "/products/$id.json");
+    await http.patch(url,
+        body: json.encode({
+          "title": newProduct.title,
+          "description": newProduct.description,
+          "price": newProduct.price,
+          "imageUrl": newProduct.imageUrl,
+        }));
+    _items[oldItem] = newProduct;
     notifyListeners();
+  }
+
+  void deleteProduct(String id) {
+    final url = Uri.https(
+        "fluttercourse-4d5af-default-rtdb.firebaseio.com", "/procuts/$id.json");
+    http.delete(url);
+    _items.removeWhere((element) => element.id == id);
+    notifyListeners();
+  }
+
+  Future<void> fetchAndSetProducts() async {
+    final url = Uri.https(
+        "fluttercourse-4d5af-default-rtdb.firebaseio.com", "/products.json");
+    try {
+      final response = await http.get(url);
+      final extractedData = json.decode(response.body) as Map<String, dynamic>;
+      final List<Product> loadedProducts = [];
+      extractedData.forEach((key, value) {
+        loadedProducts.add(Product(
+          id: key,
+          title: value["title"],
+          description: value["description"],
+          imageUrl: value["imageUrl"],
+          price: value["price"],
+          isFavorite: value["isFavorite"],
+        ));
+      });
+      _items = loadedProducts;
+      notifyListeners();
+    } catch (error) {
+      throw error;
+    }
   }
 }
