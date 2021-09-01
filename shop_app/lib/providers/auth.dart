@@ -1,13 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
-<<<<<<< HEAD
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-=======
-import 'dart:math';
-
-import 'package:flutter/material.dart';
->>>>>>> ac0d8483cfede31ae7d798b089984f4ac8483308
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -57,11 +51,7 @@ class Auth with ChangeNotifier {
 
   Future<void> signup(String email, String password) async {
     final url = Uri.parse(
-<<<<<<< HEAD
         "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${dotenv.env['FIREBASE_KEY']}");
-=======
-        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyC5DzIHSkCSYydmgKOXNGCapKP6f6eADhs");
->>>>>>> ac0d8483cfede31ae7d798b089984f4ac8483308
     final response = await http.post(url,
         body: json.encode(
             {"email": email, "password": password, "returnSecureToken": true}));
@@ -101,11 +91,7 @@ class Auth with ChangeNotifier {
 
   Future<void> logIn(String email, String password) async {
     final url = Uri.parse(
-<<<<<<< HEAD
         "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${dotenv.env['FIREBASE_KEY']}");
-=======
-        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyC5DzIHSkCSYydmgKOXNGCapKP6f6eADhs");
->>>>>>> ac0d8483cfede31ae7d798b089984f4ac8483308
     final response = await http.post(url,
         body: json.encode(
             {"email": email, "password": password, "returnSecureToken": true}));
