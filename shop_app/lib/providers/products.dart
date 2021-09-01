@@ -86,6 +86,7 @@ class Products with ChangeNotifier {
           "description": newProduct.description,
           "price": newProduct.price,
           "imageUrl": newProduct.imageUrl,
+          "isFavorites": newProduct.isFavorite,
         }));
     _items[oldItem] = newProduct;
     notifyListeners();
@@ -105,6 +106,9 @@ class Products with ChangeNotifier {
     try {
       final response = await http.get(url);
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
+      if (extractedData == null) {
+        return;
+      }
       final List<Product> loadedProducts = [];
       extractedData.forEach((key, value) {
         loadedProducts.add(Product(
