@@ -20,17 +20,17 @@ class Product with ChangeNotifier {
     this.isFavorite = false,
   });
 
-  Future<void> toggleFavoriteStatus() async {
+  Future<void> toggleFavoriteStatus(String authtoken, String userId) async {
     final oldStatus = isFavorite;
     isFavorite = !isFavorite;
     notifyListeners();
     final url = Uri.https("fluttercourse-4d5af-default-rtdb.firebaseio.com",
-        "/products/$id.json");
+        "/userFavorites/$userId/$id.json?auth=$authtoken");
     try {
-      await http.patch(
+      await http.put(
         url,
         body: json.encode({
-          "isFavorite": isFavorite,
+          isFavorite,
         }),
       );
     } catch (error) {
